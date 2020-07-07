@@ -49,7 +49,7 @@ def trim(record_data):
         r = array('h')
 
         for i in rc_data:
-            if not record_start and abs(i) > THRESHOLD:
+            if not record_start and abs(i) > THRESHOLD + 450:
                 record_start = True
                 r.append(i)
             elif record_start:
@@ -125,14 +125,14 @@ def record():
         if silent and is_recording:
             num_silent += 1
             r.extend(record_data)
-            if num_silent > 20:
+            if num_silent > 3:
                 is_recording = False
                 num_silent = 0
                 print('Stop')
                 sample_width = p.get_sample_size(FORMAT)
                 r = normalize(r)
                 r = trim(r)
-                r = add_silence(r, 0.2)
+                # r = add_silence(r, 0.2)
                 record_to_file(r, sample_width)
 
                 r = array('h')
