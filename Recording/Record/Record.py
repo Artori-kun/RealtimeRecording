@@ -102,6 +102,7 @@ def record():
     x = np.arange(0, CHUNK)
     line, = ax.plot(x, np.random.rand(CHUNK))
     ax.set_ylim([-2 ** 9, (2 ** 9 - 1)])
+    buffer = array('h')
 
     while True:
         if end:
@@ -111,6 +112,7 @@ def record():
             plt.close(fig)
             break
         record_data = array('h', stream.read(CHUNK))
+        size_buffer = 7
         if byteorder == 'big':
             record_data.byteswap()
         # data = struct.unpack(str(CHUNK) + 'h', stream.read(CHUNK))
@@ -131,10 +133,11 @@ def record():
                 print('Stop')
                 sample_width = p.get_sample_size(FORMAT)
                 r = normalize(r)
-                r = trim(r)
+                # r = trim(r)
                 # r = add_silence(r, 0.2)
                 record_to_file(r, sample_width)
 
+                # r = buffer + r
                 r = array('h')
         elif not silent:
             if not is_recording:
@@ -145,7 +148,6 @@ def record():
                 # print(os.path.relpath(PATH))
 
             r.extend(record_data)
-
         prev = record_data
 
 
